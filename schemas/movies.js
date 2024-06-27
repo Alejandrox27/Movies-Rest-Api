@@ -2,7 +2,7 @@ import z from 'zod'
 
 // validate movies
 
-const movieSchema = object({
+const movieSchema = z.object({
     title: z.string({
         invalid_type_error: 'Movie title must be a string',
         required_error: 'Movie title is required.'

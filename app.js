@@ -1,5 +1,4 @@
 import express, { json } from 'express'
-import movies from './movies.json'
 import { randomUUID } from 'node:crypto'
 import cors from 'cors'
 import { validateMovie, validatePartialMovie } from './schemas/movies.js'
@@ -10,6 +9,11 @@ import { validateMovie, validatePartialMovie } from './schemas/movies.js'
 // Escabilidad, fiabilidad, simplicidad, portabilidad, visibilidad, facil de modificar
 // - Resources: cada uno se identifica con una URL
 // - no todas las apis tienen que ser JSON, pero puede ser XML, HTML, etc.
+
+// import movies from './movies.json' with {type: 'json'} ## experimental
+import { createRequire } from 'node:module'
+const require = createRequire(import.meta.url)
+const movies = require('./movies.json')
 
 const app = express()
 app.disable('x-powered-by')
