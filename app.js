@@ -1,8 +1,8 @@
-const express = require('express')
-const movies = require('./movies.json')
-const crypto = require('node:crypto')
-const cors = require('cors')
-const { validateMovie, validatePartialMovie } = require('./schemas/movies')
+import express, { json } from 'express'
+import movies from './movies.json'
+import { randomUUID } from 'node:crypto'
+import cors from 'cors'
+import { validateMovie, validatePartialMovie } from './schemas/movies.js'
 
 // REST: Representational state Transfer
 // - Arquitectura de Software
@@ -14,13 +14,13 @@ const { validateMovie, validatePartialMovie } = require('./schemas/movies')
 const app = express()
 app.disable('x-powered-by')
 
-app.use(express.json())
+app.use(json())
 /* 
 ###
 Con app.use(cors()) no hay necesidad de agregar options al
 final para los CORS PRE Flight
 y tampoco poner los validos en cada metodo
-
+*/
 app.use(cors({
     origin: (origin, callback) => {
         const ACCEPTED_ORIGINS = [
@@ -39,21 +39,19 @@ app.use(cors({
         return callback(new Error('Not allowed by CORS'))
     }
 }))
-*/
-
 // CORS PRE-Flight
 // OPTIONS
 
-const ACCEPTED_ORIGINS = [
+/*const ACCEPTED_ORIGINS = [
     'https://movies.com',
     'http://127.0.0.1:5500',
-]
+]*/
 
 app.get('/movies', (req, res) => {
-    const origin = req.header('origin')
+    /*const origin = req.header('origin')
     if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
         res.header('Access-Control-Allow-Origin', origin)
-    }
+    }*/
     const { genre, search } = req.query
     let filteredMovies = movies
     if (genre) {
@@ -88,7 +86,7 @@ app.post('/movies', (req, res) => {
 
     // en base de datos
     const newMovie = {
-        id: crypto.randomUUID(), //Universal Unique ID
+        id: randomUUID(), //Universal Unique ID
         ...result.data
     }
 
@@ -100,10 +98,10 @@ app.post('/movies', (req, res) => {
 })
 
 app.delete('/movies/:id', (req, res) => {
-    const origin = req.header('origin')
+    /*const origin = req.header('origin')
     if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
         res.header('Access-Control-Allow-Origin', origin)
-    }
+    }*/
     const { id } = req.params
     const movieIndex = movies.findIndex(movie => movie.id === id)
 
@@ -140,7 +138,7 @@ app.patch('/movies/:id', (req, res) => {
     return res.json(updateMovie)
 })
 
-app.options('/movies/:id', (req, res) => {
+/*app.options('/movies/:id', (req, res) => {
     const origin = req.header('origin')
 
     if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
@@ -148,7 +146,7 @@ app.options('/movies/:id', (req, res) => {
         res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE')
     }
     res.send(200)
-})
+})*/
 
 const PORT = process.env.PORT ?? 1234
 
